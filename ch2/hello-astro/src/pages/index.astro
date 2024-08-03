@@ -1,0 +1,23 @@
+---
+import Head from "../components/Head.astro";
+import Body from "../components/Body.astro";
+import Style from "../components/Style.astro";
+import Script from "../components/Script.astro";
+---
+
+<!-- <!doctype html>
+<html lang="en-GB">
+    <Head />
+    <Body />
+</html> -->
+<Head />
+<Body />
+<Style />
+<Script />
+
+<!-- its content is rendered within the <body> element of the page -->
+<!-- Always have the <head> page elements in a layout component to prevent unwanted 
+behaviours. This is a recommended best practice. -->
+<head>
+  <meta property="og:type" content="article" />
+</head>
