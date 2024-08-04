@@ -1,0 +1,33 @@
+---
+import { UpvoteContent } from "../components/UpvoteContent.jsx";
+import UpvoteContentVue from "../components/UpvoteContent.vue";
+import DefaultIslandLayout from "../layouts/DefaultIslandLayout.astro";
+---
+
+<DefaultIslandLayout>
+  <!-- <UpvoteContent client:load label="Click" /> -->
+
+  <!-- <UpvoteContent client:load>
+    <em>An upvote counter created using React</em>
+  </UpvoteContent> -->
+
+  <UpvoteContent client:load>
+    <!-- <em>An upvote counter created using React</em> -->
+     
+    <ul slot="social-links">
+      <li><a href="https://twitter.com/understanding-astro">Twitter</a></li>
+      <li><a href="https://github.com/understanding-astro">GitHub</a></li>
+    </ul>
+    <em slot="description">An upvote counter created using React</em>
+  </UpvoteContent>
+
+  <UpvoteContentVue client:load>
+    <!-- <em>An upvote counter created using Vue</em> -->
+
+    <ul slot="social-links">
+      <li><a href="https://twitter.com/understanding-astro">Twitter</a></li>
+      <li><a href="https://github.com/understanding-astro">GitHub</a></li>
+    </ul>
+    <em slot="description">An upvote counter created using Vue</em>
+  </UpvoteContentVue>
+</DefaultIslandLayout>
