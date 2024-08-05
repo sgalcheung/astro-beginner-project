@@ -1,0 +1,33 @@
+---
+import { mdxComponents } from "@components/mdxComponents";
+import BlogLayout from "@layouts/BlogLayout.astro";
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  // Fetch all blog posts
+  const allBlogPosts = await getCollection("blog");
+
+  // Dynamically construct the blog paths
+  const paths = allBlogPosts.map((blogEntry) => ({
+    params: {
+      path: `${blogEntry.data.year}/${blogEntry.data.month}/${blogEntry.data.day}/${blogEntry.slug}`,
+    },
+    // 👀 Pass blogEntry as props to be later accessed in the markup via Astro.props
+    props: {
+      blogEntry,
+    },
+  }));
+
+  return paths;
+}
+
+// Get the blog entry from the props
+const { blogEntry } = Astro.props;
+// get blog content via entry.render()
+const { Content } = await blogEntry.render();
+---
+
+<BlogLayout title="React Blog - React" header="React Blog">
+  <!-- Render the Content -->
+  <Content components={mdxComponents} />
+</BlogLayout>
