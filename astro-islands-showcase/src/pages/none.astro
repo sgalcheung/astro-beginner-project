@@ -1,0 +1,24 @@
+---
+import { UpvoteContent } from "../components/UpvoteContent.jsx";
+import DefaultIslandLayout from "../layouts/DefaultIslandLayout.astro";
+---
+
+<DefaultIslandLayout>
+  <!-- <UpvoteContent client:load /> -->
+  <!-- It’s essential to pass the framework name as shown above. Otherwise, Astro doesn’t know 
+what framework Javascript to load. This is because this isn’t determined on the server.  -->
+  <!-- <UpvoteContent client:only="react" /> -->
+
+  <!-- 
+  <ReactComponent client:only="react" />
+  <PreactComponent client:only="preact" />
+  <SvelteComponent client:only="svelte" />
+  <VueComponent client:only="vue" />
+  <SolidComponent client:only="solid-js" />
+   -->
+
+  <!-- <UpvoteContent client:visible /> -->
+  <!-- <UpvoteContent client:media="(max-width: 30em)" /> -->
+
+  <UpvoteContent client:idle />
+</DefaultIslandLayout>
