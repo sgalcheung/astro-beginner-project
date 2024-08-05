@@ -1,0 +1,50 @@
+---
+import type { BundledLanguage } from "shiki";
+// Similar to Astro's Code component, this is built on shiki
+import { createHighlighter } from "shiki";
+
+import fs from "fs";
+import path from "path";
+
+// Similar to Astro's Code component, receive lang and code as props
+type Props = {
+  lang?: BundledLanguage;
+  code: string;
+};
+
+const { code = "", lang = "jsx" } = Astro.props;
+
+const highlighter = await createHighlighter({
+  themes: [],
+  langs: [lang],
+});
+
+// 👀 Load the custom theme
+// Load the theme object from a file, a network request, or anywhere
+const themPath = path.resolve("src/snippet-theme.json");
+const themJson = fs.readFileSync(themPath, "utf-8");
+await highlighter.loadTheme(JSON.parse(themJson));
+
+const html = highlighter.codeToHtml(code, {
+  lang: lang as BundledLanguage,
+  theme: "Night Owl",
+});
+
+highlighter.dispose();
+---
+
+{
+  /** 
+ A fragment is an available Astro component. Use Fragment to prevent 
+unnecessary markup.
+The set:html directive is used to inject an HTML string into an element 
+e.g., similar to el.innerHTML.
+**/
+}
+<!-- <Fragment
+  set:html={highlighter.codeToHtml(code, {
+    lang,
+  })}
+  /> -->
+
+<Fragment set:html={html} />
