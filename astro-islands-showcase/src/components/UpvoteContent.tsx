@@ -9,7 +9,7 @@ const MAX_COUNT = 50;
 
 // export const UpvoteContent = (props: { label:string }) => {
 // export const UpvoteContent = (props: PropsWithChildren<{}>) => {
-  export const UpvoteContent = (props) => {
+  export const UpvoteContent = (props: any) => {
     // the initial state of the upvote counter
     // const [upvoteCount, setUpvoteCount] = useState(0);
     const upvoteCount = useStore(upvoteCountStore);

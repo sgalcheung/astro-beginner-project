@@ -1,3 +1,3 @@
 
 
-Base on [astro-islands-showcase](https://github.com/understanding-astro/astro-islands-showcase)
+Base on [astro-islands-showcase:clean-slate](https://github.com/understanding-astro/astro-islands-showcase)
