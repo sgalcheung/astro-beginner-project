@@ -1,0 +1,56 @@
+---
+// // Get the dynamic route path
+// const { path } = Astro.params;
+// // Hold a list of all expected paths and corresponding data, e.g. title.
+// const page = [
+//   {
+//     path: undefined,
+//     title: "View all products",
+//   },
+//   {
+//     path: "product-id",
+//     title: "Some Product",
+//   },
+//   {
+//     path: "category/product-id",
+//     title: "Some Product Category Item",
+//   },
+//   {
+//     path: "types/category/product-id",
+//     title: "Some Product Type Category Item",
+//   },
+// ];
+// //Is this a valid path? i.e., exists in our list?
+// const relevantPageDetails = page.find((v) => v.path === path);
+// if (!relevantPageDetails) {
+//   // redirect if the dynamic page isn't valid.
+//   return Astro.redirect("/404");
+// }
+
+const { path = "index" } = Astro.params;
+const page = [
+  {
+    match: /some-regex/,
+    title: "View all products",
+  },
+  {
+    match: /some-regex/,
+    title: "Some Product",
+  },
+  {
+    match: /some-regex/,
+    title: "Some Product Category Item",
+  },
+  {
+    match: /some-regex/,
+    title: "Some Product Type Category Item",
+  },
+];
+const relevantPageDetails = page.find((v) => path.match(v.match));
+if (!relevantPageDetails) {
+  return Astro.redirect("/404");
+}
+---
+
+<!-- render the title of the page -->
+<h1>{relevantPageDetails.title}</h1>
