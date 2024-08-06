@@ -1,0 +1,48 @@
+---
+// const isBeta = true;
+// if (isBeta) {
+//   return new Response("app not available - check back", {
+//     status: 200,
+//     statusText: "OK!",
+//   });
+// }
+
+// Astro.response.headers.set("beta_id", "some_header_value");
+
+/** 
+const getIsLoggedOut = () => true;
+const isLoggedOut = getIsLoggedOut();
+if (isLoggedOut) {
+  //   const url = Astro.request.url + "/about";
+  //   return Response.redirect(url, 307); // immutable
+
+  // 使用 Response 对象进行重定向
+  //   return new Response(null, {
+  //     status: 307,
+  //     headers: {
+  //       Location: "/about", // 重定向到首页
+  //     },
+  //   });
+
+  // Astro.redirect
+  // The principle is the same as new Response(null, {headers:{"/about"}})
+  return Astro.redirect("/about", 307);
+}
+  */
+
+const cat_api_token = import.meta.env.CAT_API_TOKEN;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Astro</title>
+  </head>
+  <body>
+    <h1>We're live!</h1>
+    <p>{cat_api_token}</p>
+  </body>
+</html>

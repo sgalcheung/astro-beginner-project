@@ -1,0 +1,38 @@
+---
+import { sleep } from "../sleep";
+// import Data from "../components/Data.astro";
+// import OtherData from "../components/OtherData.astro";
+import Name from "../components/Name.astro";
+import Fact from "../components/Fact.astro";
+
+const getSomeData = async () => {
+  await sleep(1000);
+  return "some data ";
+};
+const getSomeOtherData = async () => {
+  await sleep(200);
+  return "another data";
+};
+const data = await getSomeData();
+const otherData = await getSomeOtherData();
+---
+
+<html>
+  <head>
+    <title>Product</title>
+  </head>
+  <body>
+    <h2>A name</h2>
+    <!-- <p>{data}</p> -->
+    <!-- Handle fetch of data in <Data /> -->
+    <!-- <Data /> -->
+    <!-- <p>{getSomeData}</p> -->
+     <Name />
+    <h2>A fact</h2>
+    <!-- <p>{otherData}</p> -->
+    <!-- Handle other data fetch in <OtherData /> -->
+    <!-- <OtherData / -->
+    <!-- <p>{getSomeOtherData}</p> -->
+     <Fact />
+  </body>
+</html>
