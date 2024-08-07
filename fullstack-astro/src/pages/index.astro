@@ -1,0 +1,143 @@
+---
+import H1 from "@components/H1.astro";
+import Empty from "@components/Empty.astro";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Container from "@components/Container.astro";
+
+import { serverApp } from "@scripts/firebase/initServer";
+import { getAuth } from "firebase-admin/auth";
+import { TOKEN } from "@constants/cookies";
+
+import { getStorage } from "firebase-admin/storage";
+import { BUCKET_NAME } from "@constants/firebase";
+import LinkCTA from "@components/LinkCTA.astro";
+import AudioPlayer from "@components/AudioPlayer.astro";
+
+// Get client token from the URL param
+const url = new URL(Astro.request.url);
+const urlTokenParam = url.searchParams.get("token");
+// Get token from cookies
+const cookieToken = Astro.cookies.get(TOKEN);
+const token = urlTokenParam || cookieToken?.value;
+if (!token) {
+  // Unauthorised user. Redirect to sign in
+  return Astro.redirect("/signin");
+}
+const auth = getAuth(serverApp);
+try {
+  // verify the auth token
+  await auth.verifyIdToken(token);
+
+  // set token cookie
+  // Note that the "TOKEN" constant refers to the string "X-Token."
+  Astro.cookies.set(TOKEN, token, {
+    path: "/",
+    httpOnly: true,
+    secure: true,
+  });
+} catch (error) {
+  console.error("Could not decode token", {
+    fromCookie: !!cookieToken?.value,
+    fromUrl: !!urlTokenParam,
+  });
+  // Error occurred, e.g., invalid token. Redirect to sign in
+  return Astro.redirect("/signin");
+}
+
+// Represent the recordings with the "Audible" type alias
+type Audible = { url: string; timeCreated: string };
+// audibles will hold the list of "Audibles."
+let audibles: Audible[] = [];
+const storage = getStorage(serverApp);
+try {
+  /**
+   * After verifying the user auth token
+   * and setting the token cookie ...
+   */
+  try {
+    // get all recordings in the storage bucket
+    const bucket = storage.bucket(BUCKET_NAME);
+    const [files] = await bucket.getFiles();
+    audibles = await Promise.all(
+      files.map(async (file) => {
+        const [metadata] = await file.getMetadata();
+        // return the url and timeCreated metadata
+        return {
+          url: file.publicUrl(),
+          timeCreated: metadata.timeCreated,
+        };
+      })
+    );
+  } catch (error) {
+    console.error(error);
+    console.error("Error fetching audibles");
+    return Astro.redirect("/signin");
+  } finally {
+  }
+} finally {
+}
+
+if (Astro.request.method === "POST") {
+  try {
+    // Get the form data
+    const data = await Astro.request.formData();
+    /**
+      * Get the feedback value. 
+      * Corresponds to the form input element value of the name, 
+      "feedback".
+    */
+    const feedback = data.get("feedback");
+    // Do something with the data
+    console.log({ feedback });
+    // Do something with the data
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
+  }
+}
+---
+
+<BaseLayout isPrivatePage>
+  <Container>
+    <H1>Hear what the world's saying</H1>
+    <p class="text-lg dark:text-slate-200 pb-7 pt-1">
+      Discover the voices of the world. Simply listen.
+    </p>
+
+    <div class="flex flex-col items-center">
+      <!-- 👀 AudioPlayers will go here  -->
+      {
+        audibles.length === 0 ? (
+          <>
+            <Empty />
+            <LinkCTA href="/record">Record</LinkCTA>
+          </>
+        ) : (
+          audibles
+            .sort((a, b) =>
+              new Date(a.timeCreated) < new Date(b.timeCreated) ? 1 : -1
+            )
+            .map((audible) => (
+              <AudioPlayer
+                url={audible.url}
+                timeCreated={audible.timeCreated}
+              />
+            ))
+        )
+      }
+    </div>
+  </Container>
+</BaseLayout>
+
+<script>
+  // Enhancement: remove the token from the URL after the page's parsed.
+  const url = new URL(window.location.href);
+  const urlTokenParam = url.searchParams.get("token");
+  if (urlTokenParam) {
+    // delete the token param from the URL
+    url.searchParams.delete("token");
+    // update history without a refresh with the new URL
+    window.history.pushState({}, "", url.href);
+  }
+</script>
