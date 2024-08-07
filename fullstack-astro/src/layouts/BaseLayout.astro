@@ -1,0 +1,121 @@
+---
+import Button from "../components/Button.astro";
+import Logo from "../components/Logo.astro";
+
+type Props = {
+  isPrivatePage?: boolean;
+};
+
+const { isPrivatePage = false } = Astro.props;
+---
+
+<html lang="en" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content="Be Audible: let your voice be heard" />
+
+    <title>Be Audible</title>
+  </head>
+
+  <body class="bg-gray-50 dark:bg-gray-900 p-12">
+    <nav class="flex items-center">
+      <div class="flex items-center">
+        <Logo />
+      </div>
+
+      {
+        isPrivatePage && (
+          <>
+            <form class="mx-auto flex" method="POST">
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                  <svg
+                    aria-hidden="true"
+                    class="w-5 h-5 text-gray-500 dark:text-gray-400"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <>
+                      <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                      <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                    </>
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  name="feedback"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="Give us feedback!"
+                />
+              </div>
+              <button
+                class="ml-1 rounded-xl text-sm px-3 border-gray-50 border-2 text-slate-200 opacity-30 hover:opacity-70"
+                type="submit"
+              >
+                Send
+              </button>
+            </form>
+
+            <a class="mr-6 dark:text-primary-100" href="/record">
+              <svg
+                viewBox="0 0 16 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-[30px] mx-auto"
+              >
+                <path
+                  d="M8 12.5a4.5 4.5 0 1 0 0-9.002A4.5 4.5 0 0 0 8 12.5ZM8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0ZM1 8a7 7 0 1 1 14 0A7 7 0 0 1 1 8Z"
+                  fill="currentcolor"
+                />
+              </svg>
+              <span>Record</span>
+            </a>
+            <Button id="sign-out-button">Sign out</Button>
+          </>
+        )
+      }
+    </nav>
+    <slot />
+  </body>
+</html>
+
+<script>
+  import { auth } from "@scripts/firebase/init";
+
+  // Grab the sign-out button
+  const signoutButton = document.getElementById("sign-out-button") as
+    | HTMLButtonElement
+    | undefined;
+  if (signoutButton) {
+    // Add a click event listener on the button
+    signoutButton.addEventListener("click", async () => {
+      try {
+        // Disable the button while we log the user out
+        signoutButton.disabled = true;
+        // Change button text to read "Signing out ..."
+        signoutButton.innerText = "Signing out ...";
+        // Invalidate server http cookie
+        const response = await fetch("/api/auth/signout", {
+          method: "POST",
+        });
+        if (!response.ok) {
+          throw new Error("server signout failed");
+        }
+        /**
+         * sign the user out via the signOut method
+         * on the Firebase auth module
+         */
+        await auth.signOut();
+        // Redirect to the signin page
+        window.location.href = "/signin";
+      } catch (error) {
+        signoutButton.disabled = false;
+        alert(error);
+      }
+    });
+  }
+</script>
