@@ -10,6 +10,6 @@ export default defineConfig({
   integrations: [astroHello(), lifecycleLogs()],
   output: "server",
   adapter: node({
-    mode: "standalone"
-  })
+    mode: "standalone",
+  }),
 });

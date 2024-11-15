@@ -26,8 +26,9 @@ export default function helloIntegration(): AstroIntegration {
     name: "astro-hello",
     hooks: {
       "astro:config:setup": (options) => {
+        // A callback function to inject a string of JavaScript content onto every page.
         options.injectScript("page", `import '/src/scripts/globalLog.js'`);
-        
+
         logServerMessage("Injected script");
       },
     },
